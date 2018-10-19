@@ -193,3 +193,12 @@ getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker
+  .register('/svcwrkr.js')
+  .catch(function(err) {
+    console.error(err);
+  });
+}
