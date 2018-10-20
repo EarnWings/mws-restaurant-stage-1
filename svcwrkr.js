@@ -28,3 +28,27 @@ self.addEventListener('install', function(event) {
 		})
 	);
 });
+
+self.addEventListener('fetch', function(event) {
+	event.respondWith(
+		caches.match(event.request).then(function(response) {
+			if (response) {
+				console.log('Found ', event.request, ' in cache');
+				return response;
+			} else {
+				console.log('Could not find ', event.request, ' in cache, FETCHING!');
+				return fetch(event.request)
+				.then(function(response) {
+					const clonedResponse = response.clone();
+					caches.open('v1').then(function(cache) {
+						cache.put(event.request, clonedResponse);
+					})
+					return response;
+				})
+				.catch(function(err) {
+					console.error(err);
+				});
+			}
+		})
+	);
+});
